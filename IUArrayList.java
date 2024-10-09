@@ -45,35 +45,57 @@ import java.util.NoSuchElementException;
      }
 
     @Override
-    public void addToFront(T element) {
-        // TODO Auto-generated method 
+    public void addToFront(T element) { 
         // TODO check for array length and increase if necessary
         for(int i = rear; i > 0; i--) {
             array[i] = array[i - 1];
             modCount++;
         }
         array[0] = element;
+        // TODO check if I need to add another modcount here
         rear++;
     }
 
     @Override
     public void addToRear(T element) {
-        // TODO Auto-generated method stub
-                array[rear] = element;
-                rear++;
-                modCount++;
+        // TODO check array size is right and increase if necessary
+        array[rear] = element;
+        rear++;
+        modCount++;
     }
 
     @Override
     public void add(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        // TODO check array size is right and increase if necessary
+        array[rear] = element;
+        rear++;
+        modCount++;
     }
 
     @Override
     public void addAfter(T element, T target) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addAfter'");
+        // TODO check array size and increase if needed
+        int elementLocation = -1;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == target) {
+                elementLocation = i;
+                break;
+            }
+        }
+
+        if(elementLocation == -1) {
+            throw new NoSuchElementException();
+        }
+        else {
+            for (int i = rear; i >= (elementLocation + 2); i--) {
+                array[i] = array[i - 1];
+                modCount++;
+            }
+            array[elementLocation + 1] = element;
+            // TODO check if I need to add another modcount here
+            rear++;
+        }
     }
 
     @Override
