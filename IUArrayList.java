@@ -90,7 +90,7 @@ import java.util.NoSuchElementException;
 
         // find location of target element
         int elementLocation = -1;
-        for (int i = 0; i < array.length; i++) {
+        for (int i = 0; i < rear; i++) {
             if (array[i] == target) {
                 elementLocation = i;
                 break;
@@ -120,7 +120,7 @@ import java.util.NoSuchElementException;
         }
 
         // check index is possible to set something at
-        if ((index < 0) || (index > array.length)) {
+        if ((index < 0) || (index >= size())) {
             throw new IndexOutOfBoundsException();
         } else {
             // shift elements at and after index to the right and insert new value at given index
@@ -193,7 +193,7 @@ import java.util.NoSuchElementException;
         T element = array[index];
 
         // check index is within possible range
-        if ((index < 0) || (index >= array.length)) {
+        if ((index < 0) || (index >= size())) {
             throw new IndexOutOfBoundsException();
         } else {
             // remove element at index and shift elements after index to the left
@@ -209,7 +209,7 @@ import java.util.NoSuchElementException;
 
     @Override
     public void set(int index, T element) {
-        if ((index < 0) || (index >= array.length)) {
+        if ((index < 0) || (index >= size())) {
             throw new IndexOutOfBoundsException();
         } else {
             array[index] = element;
@@ -219,7 +219,7 @@ import java.util.NoSuchElementException;
 
     @Override
     public T get(int index) {
-        if ((index < 0) || (index >= array.length)) {
+        if ((index < 0) || (index >= size())) {
             throw new IndexOutOfBoundsException();
         } else {
             return array[index];
@@ -288,7 +288,6 @@ import java.util.NoSuchElementException;
 
     @Override
     public int size() {
-        // TODO fix references to length that should be size()
         int size = 0;
 
         for(int i = 0; i < rear; i++) {
