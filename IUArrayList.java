@@ -114,14 +114,40 @@ import java.util.NoSuchElementException;
 
     @Override
     public void add(int index, T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
+        // check array length and increase if rear is in last spot of array
+        if (rear == (array.length - 2)) {
+            expandCapacity();
+        }
+
+        // check index is possible to set something at
+        if ((index < 0) || (index > array.length)) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        // shift elements at and after index to the right and insert new value at given index
+        for (int i = rear; i > index; i--) {
+            array[i] = array[i - 1];
+            modCount++;
+        }
+        array[index] = element;
+        // TODO check if I need to add another modcount here
+        rear++;
     }
 
     @Override
     public T removeFirst() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeFirst'");
+        T element = array[0];
+        array[0] = null;
+        // TODO check if I need to add another modcount here
+
+        for (int i = 0; i < rear; i++) {
+            array[i] = array[i + 1];
+            modCount++;
+        }
+        rear--;
+        array[rear] = null;
+
+        return element;
     }
 
     @Override
