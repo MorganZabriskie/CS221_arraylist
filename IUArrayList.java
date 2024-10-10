@@ -122,16 +122,16 @@ import java.util.NoSuchElementException;
         // check index is possible to set something at
         if ((index < 0) || (index > array.length)) {
             throw new IndexOutOfBoundsException();
+        } else {
+            // shift elements at and after index to the right and insert new value at given index
+            for (int i = rear; i > index; i--) {
+                array[i] = array[i - 1];
+                modCount++;
+            }
+            array[index] = element;
+            // TODO check if I need to add another modcount here
+            rear++;
         }
-
-        // shift elements at and after index to the right and insert new value at given index
-        for (int i = rear; i > index; i--) {
-            array[i] = array[i - 1];
-            modCount++;
-        }
-        array[index] = element;
-        // TODO check if I need to add another modcount here
-        rear++;
     }
 
     @Override
@@ -152,68 +152,152 @@ import java.util.NoSuchElementException;
 
     @Override
     public T removeLast() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'removeLast'");
+        T element = array[rear - 1];
+        array[rear - 1] = null;
+        modCount++;
+        rear--;
+
+        return element;
     }
 
     @Override
     public T remove(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        int elementLocation = -1;
+        T returnElement = element;
+
+        // find location of target element
+        for(int i = 0; i < rear; i++) {
+            if (array[i] == element) {
+                elementLocation = i;
+                returnElement = array[i];
+                break;
+            }
+        }
+
+        // move array elements to the left starting at target index
+        if (elementLocation == -1) {
+            throw new NoSuchElementException();
+        } else {
+            for(int i = elementLocation; i < rear; i++) {
+                array[i] = array[i + 1];
+                modCount++; 
+            }
+            rear--;
+        }
+
+        return returnElement;
     }
 
     @Override
     public T remove(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remove'");
+        T element = array[index];
+
+        // check index is within possible range
+        if ((index < 0) || (index >= array.length)) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            // remove element at index and shift elements after index to the left
+            for(int i = index; i < rear; i++) {
+                array[i] = array[i + 1];
+                modCount++;
+            }
+            rear--;
+        }
+
+        return element;
     }
 
     @Override
     public void set(int index, T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'set'");
+        if ((index < 0) || (index >= array.length)) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            array[index] = element;
+            // TODO check if I need to add another modcount here
+        }
     }
 
     @Override
     public T get(int index) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        if ((index < 0) || (index >= array.length)) {
+            throw new IndexOutOfBoundsException();
+        } else {
+            return array[index];
+        }
     }
 
     @Override
     public int indexOf(T element) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'indexOf'");
+        int index = -1;
+
+        for(int i = 0; i < rear; i++) {
+            if (array[i] == element) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 
     @Override
     public T first() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'first'");
+        if(isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            return array[0];
+        }
     }
 
     @Override
     public T last() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'last'");
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        } else {
+            return array[rear - 1];
+        }
     }
 
     @Override
     public boolean contains(T target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
+        boolean contains = false;
+
+        for(int i = 0; i < rear; i++) {
+            if(array[i] == target) {
+                contains = true;
+                break;
+            }
+        }
+
+        return contains;
     }
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+        boolean isEmpty = true;
+
+        for(int i = 0; i < rear; i++) {
+            if (array[i] != null) {
+                isEmpty = false;
+                break;
+            }
+        }
+
+        return isEmpty;
     }
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'size'");
+        // TODO fix references to length that should be size()
+        int size = 0;
+
+        for(int i = 0; i < rear; i++) {
+            if (array[i] != null) {
+                size++;
+            }
+        }
+
+        return size;
     }
 
     @Override
