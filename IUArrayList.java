@@ -46,7 +46,10 @@ import java.util.NoSuchElementException;
 
     @Override
     public void addToFront(T element) { 
-        // TODO check for array length and increase if necessary
+        // check array length and increase if rear is in last spot of array
+        if (rear == (array.length - 2)) {
+            expandCapacity();
+        }
         for(int i = rear; i > 0; i--) {
             array[i] = array[i - 1];
             modCount++;
@@ -58,7 +61,10 @@ import java.util.NoSuchElementException;
 
     @Override
     public void addToRear(T element) {
-        // TODO check array size is right and increase if necessary
+        // check array length and increase if rear is in last spot of array
+        if (rear == (array.length - 2)) {
+            expandCapacity();
+        }
         array[rear] = element;
         rear++;
         modCount++;
@@ -66,7 +72,10 @@ import java.util.NoSuchElementException;
 
     @Override
     public void add(T element) {
-        // TODO check array size is right and increase if necessary
+        // check array length and increase if rear is in last spot of array
+        if (rear == (array.length - 2)) {
+            expandCapacity();
+        }
         array[rear] = element;
         rear++;
         modCount++;
@@ -74,8 +83,12 @@ import java.util.NoSuchElementException;
 
     @Override
     public void addAfter(T element, T target) {
-        // TODO Auto-generated method stub
-        // TODO check array size and increase if needed
+        // check array length and increase if rear is in last spot of array
+        if (rear == (array.length - 2)) {
+            expandCapacity();
+        }
+
+        // find location of target element
         int elementLocation = -1;
         for (int i = 0; i < array.length; i++) {
             if (array[i] == target) {
@@ -84,6 +97,7 @@ import java.util.NoSuchElementException;
             }
         }
 
+        // add new element after target element
         if(elementLocation == -1) {
             throw new NoSuchElementException();
         }
