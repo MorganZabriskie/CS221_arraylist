@@ -120,7 +120,7 @@ import java.util.NoSuchElementException;
         }
 
         // check index is possible to set something at
-        if ((index < 0) || (index >= size())) {
+        if ((index < 0) || (index > size())) {
             throw new IndexOutOfBoundsException();
         } else {
             // shift elements at and after index to the right and insert new value at given index
@@ -136,28 +136,44 @@ import java.util.NoSuchElementException;
 
     @Override
     public T removeFirst() {
-        T element = array[0];
-        array[0] = null;
-        // TODO check if I need to add another modcount here
+        if (array[0] == null) {
+            throw new NoSuchElementException();
+        } else {
+            T element = array[0];
+            // TODO check if I need to add another modcount here
 
-        for (int i = 0; i < rear; i++) {
-            array[i] = array[i + 1];
-            modCount++;
-        }
-        rear--;
+            for (int i = 0; i < rear; i++) {
+                array[i] = array[i + 1];
+                modCount++;
+            }
+            // check you aren't setting rear to a negative number
+            if (rear > 0) {
+                rear--;
+            } else {
+                rear = 0;
+            }
         array[rear] = null;
-
         return element;
+        }
     }
 
     @Override
     public T removeLast() {
-        T element = array[rear - 1];
-        array[rear - 1] = null;
-        modCount++;
-        rear--;
+        if (rear <= 0) {
+            throw new NoSuchElementException();
+        } else {
+            T element = array[rear - 1];
+            array[rear - 1] = null;
+            modCount++;
 
-        return element;
+            // check you aren't setting rear to a negative number
+            if (rear > 0) {
+                rear--;
+            } else {
+                rear = 0;
+            }
+            return element;
+        }
     }
 
     @Override
@@ -182,7 +198,12 @@ import java.util.NoSuchElementException;
                 array[i] = array[i + 1];
                 modCount++; 
             }
-            rear--;
+            // check you aren't setting rear to a negative number
+            if (rear > 0) {
+                rear--;
+            } else {
+                rear = 0;
+            }
         }
 
         return returnElement;
@@ -201,7 +222,12 @@ import java.util.NoSuchElementException;
                 array[i] = array[i + 1];
                 modCount++;
             }
-            rear--;
+            // check you aren't setting rear to a negative number
+            if (rear > 0) {
+                rear--;
+            } else {
+                rear = 0;
+            }
         }
 
         return element;
@@ -297,6 +323,25 @@ import java.util.NoSuchElementException;
         }
 
         return size;
+    }
+
+    @Override
+    public String toString() {
+        if (array[0] == null) {
+            String returnVal = "[ ]";
+            return returnVal;
+        } else {
+            String returnVal = "[";
+            for (int i = 0; i < rear; i++) {
+                if (i == (rear - 1)) {
+                    returnVal += array[i] + "]";
+                } else {
+                    returnVal += array[i] + ", ";
+                }
+            }
+
+            return returnVal;
+        }
     }
 
     @Override
