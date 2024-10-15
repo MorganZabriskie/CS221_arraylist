@@ -346,8 +346,8 @@ import java.util.NoSuchElementException;
 
     @Override
     public Iterator<T> iterator() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'iterator'");
+        Iterator<T> newIterator = new ArrayIterator<T>();
+        return newIterator;
     }
 
     @Override
@@ -361,5 +361,54 @@ import java.util.NoSuchElementException;
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'listIterator'");
     }
+
+    /**
+     * Private inner class for iterators in the IUArrayList class
+     * 
+     * @author Morgan Zabriskie
+     *
+     * @param <E> type to store
+     */
     
+    private class ArrayIterator<E extends T> implements Iterator<T> {
+
+        // instance variables
+        boolean nextCalled = false;
+        int index = -1;
+
+        public ArrayIterator() {
+
+        }
+
+        @Override
+        public boolean hasNext() {
+            boolean hasNext = false;
+            if(array[this.index + 1] != null) {
+                hasNext = true;
+            }
+
+            return hasNext;
+        }
+
+        @Override
+        public T next() {
+            T next = array[this.index + 1];
+            nextCalled = true;
+            index++;
+            return next;
+            
+        }
+
+        @Override
+        public void remove() {
+            if(!nextCalled) {
+                throw new IllegalStateException();
+            } else {
+                array[this.index] = null;
+                for(int i = (index + 1); i < array)
+                nextCalled = false;
+            }
+        }
+        
+    }
  }
