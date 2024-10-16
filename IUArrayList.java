@@ -395,14 +395,16 @@ import java.util.NoSuchElementException;
 
         @Override
         public T next() {
+            // account for empty list
             if(array[0] == null) {
                 throw new NoSuchElementException();
-            } else if (array[index + 1] == null) {
+                // account for end of list
+            } else if (array[this.index + 1] == null) {
                 throw new NoSuchElementException();
             } else {
-                T next = array[this.index + 1];
+                this.index++;
+                T next = array[this.index];
                 nextCalled = true;
-                index++;
                 return next;
             }
         }
