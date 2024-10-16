@@ -89,24 +89,27 @@ import java.util.NoSuchElementException;
         }
 
         // find location of target element
-        int elementLocation = -1;
+        int targetLocation = -1;
         for (int i = 0; i < rear; i++) {
             if (array[i] == target) {
-                elementLocation = i;
+                targetLocation = i;
                 break;
             }
         }
 
         // add new element after target element
-        if(elementLocation == -1) {
+        if(targetLocation == -1) {
             throw new NoSuchElementException();
-        }
-        else {
-            for (int i = rear; i >= (elementLocation + 2); i--) {
+        } else if(targetLocation == 0 && rear == 1) {
+            array[rear] = element;
+            // TODO check if I need to add another modcount here
+            rear++;
+        } else {
+            for (int i = rear; i >= (targetLocation + 1); i--) {
                 array[i] = array[i - 1];
                 modCount++;
             }
-            array[elementLocation + 1] = element;
+            array[targetLocation + 1] = element;
             // TODO check if I need to add another modcount here
             rear++;
         }
@@ -159,7 +162,7 @@ import java.util.NoSuchElementException;
 
     @Override
     public T removeLast() {
-        if (rear <= 0) {
+        if (array[0] == null) {
             throw new NoSuchElementException();
         } else {
             T element = array[rear - 1];
@@ -392,11 +395,16 @@ import java.util.NoSuchElementException;
 
         @Override
         public T next() {
-            T next = array[this.index + 1];
-            nextCalled = true;
-            index++;
-            return next;
-            
+            if(array[0] == null) {
+                throw new NoSuchElementException();
+            } else if (array[index + 1] == null) {
+                throw new NoSuchElementException();
+            } else {
+                T next = array[this.index + 1];
+                nextCalled = true;
+                index++;
+                return next;
+            }
         }
 
         @Override
@@ -404,11 +412,19 @@ import java.util.NoSuchElementException;
             if(!nextCalled) {
                 throw new IllegalStateException();
             } else {
-                array[this.index] = null;
-                for(int i = (index + 1); i < array)
+                for (int i = this.index; i < rear; i++) {
+                    array[i] = array[i + 1];
+                    modCount++;
+                }
+                // check you aren't setting rear to a negative number
+                if (rear > 0) {
+                    rear--;
+                } else {
+                    rear = 0;
+                }
+                this.index--;
                 nextCalled = false;
             }
         }
-        
     }
  }
