@@ -1004,10 +1004,9 @@ public class ListTester {
 			printTest(scenarioName + "_iterNextNextRemove_testIterHasNext", testIterHasNext(iterAfterRemove(iterAfterNext(scenario.build(), 2)), Result.False));
 			printTest(scenarioName + "_iterNextNextRemove_testIterNext", testIterNext(iterAfterRemove(iterAfterNext(scenario.build(), 2)), null, Result.NoSuchElement));
 			printTest(scenarioName + "_iterNextNextRemove_testIterRemove", testIterRemove(iterAfterRemove(iterAfterNext(scenario.build(), 2)), Result.IllegalState));
-			//TODO: fix these scenarios
-			//printTest(scenarioName + "_iterNextRemoveNext_testIterHasNext", testIterHasNext(iterAfterRemove(iterAfterNext(scenario.build(), 1)), Result.True));
-			//printTest(scenarioName + "_iterNextRemoveNext_testIterNext", testIterNext(iterAfterRemove(iterAfterNext(scenario.build(), 1)), null, Result.MatchingValue));
-			//printTest(scenarioName + "_iterNextRemoveNext_testIterRemove", testIterRemove(iterAfterRemove(iterAfterNext(scenario.build(), 1)), Result.IllegalState));
+			printTest(scenarioName + "_iterNextRemoveNext_testIterHasNext", testIterHasNext((iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 1))), Result.False));
+			printTest(scenarioName + "_iterNextRemoveNext_testIterNext", testIterNext(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 1)), null, Result.NoSuchElement));
+			printTest(scenarioName + "_iterNextRemoveNext_testIterRemove", testIterRemove(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 1)), Result.NoException));
 			// ListIterator
 			if (SUPPORTS_LIST_ITERATOR) {
 				//TODO: will add for double-linked list
@@ -1110,13 +1109,12 @@ public class ListTester {
 			printTest(scenarioName + "_iterNextNextNextRemove_testIterHasNext", testIterHasNext(iterAfterRemove(iterAfterNext(scenario.build(), 3)), Result.False));
 			printTest(scenarioName + "_iterNextNextNextRemove_testIterNext", testIterNext(iterAfterRemove(iterAfterNext(scenario.build(), 3)), null, Result.NoSuchElement));
 			printTest(scenarioName + "_iterNextNextNextRemove_testIterRemove", testIterRemove(iterAfterRemove(iterAfterNext(scenario.build(), 3)), Result.IllegalState));
-			//TODO: fix these scenarios
-			//printTest(scenarioName + "_iterNextRemoveNext_testIterHasNext", testIterHasNext(iterAfterRemove(iterAfterNext(scenario.build(), 1)), Result.True));
-			//printTest(scenarioName + "_iterNextRemoveNext_testIterNext", testIterNext(iterAfterRemove(iterAfterNext(scenario.build(), 1)), null, Result.MatchingValue));
-			//printTest(scenarioName + "_iterNextRemoveNext_testIterRemove", testIterRemove(iterAfterRemove(iterAfterNext(scenario.build(), 1)), Result.IllegalState));
-			//printTest(scenarioName + "_iterNextNextRemoveNext_testIterHasNext", testIterHasNext(iterAfterRemove(iterAfterNext(scenario.build(), 1)), Result.True));
-			//printTest(scenarioName + "_iterNextNextRemoveNext_testIterNext", testIterNext(iterAfterRemove(iterAfterNext(scenario.build(), 1)), null, Result.MatchingValue));
-			//printTest(scenarioName + "_iterNextNextRemoveNext_testIterRemove", testIterRemove(iterAfterRemove(iterAfterNext(scenario.build(), 1)), Result.IllegalState));
+			printTest(scenarioName + "_iterNextRemoveNext_testIterHasNext", testIterHasNext((iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 1))), Result.True));
+			printTest(scenarioName + "_iterNextRemoveNext_testIterNext", testIterNext(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 1)), contents[2], Result.MatchingValue));
+			printTest(scenarioName + "_iterNextRemoveNext_testIterRemove", testIterRemove(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 1)), Result.NoException));
+			printTest(scenarioName + "_iterNextNextRemoveNext_testIterHasNext", testIterHasNext(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 2)), Result.False));
+			printTest(scenarioName + "_iterNextNextRemoveNext_testIterNext", testIterNext(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 2)), null, Result.NoSuchElement));
+			printTest(scenarioName + "_iterNextNextRemoveNext_testIterRemove", testIterRemove(iterAfterRemoveAndNext(iterAfterNext(scenario.build(), 2)), Result.NoException));
 			// ListIterator
 			if (SUPPORTS_LIST_ITERATOR) {
 				//TODO: will add for double-linked list
@@ -1691,6 +1689,19 @@ public class ListTester {
 	 */
 	private Iterator<Integer> iterAfterRemove(Iterator<Integer> iterator) {
 		iterator.remove();
+		return iterator;
+	}
+
+	/**
+	 * Helper for testing iterators. Return an Iterator that has had remove() and next() 
+	 * called once.
+	 * 
+	 * @param iterator
+	 * @return same Iterator following a call to remove() and next()
+	 */
+	private Iterator<Integer> iterAfterRemoveAndNext(Iterator<Integer> iterator) {
+		iterator.remove();
+		iterator.next();
 		return iterator;
 	}
 
