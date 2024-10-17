@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -16,7 +17,6 @@ import java.util.NoSuchElementException;
  public class IUArrayList<T> implements IndexedUnsortedList<T> {
 
      private static final int DEFAULT_CAPACITY = 10;
-     private static final int NOT_FOUND = -1;
 
      private T[] array;
      private int rear;
@@ -55,7 +55,7 @@ import java.util.NoSuchElementException;
             modCount++;
         }
         array[0] = element;
-        // TODO check if I need to add another modcount here
+        modCount++;
         rear++;
     }
 
@@ -102,7 +102,7 @@ import java.util.NoSuchElementException;
             throw new NoSuchElementException();
         } else if(targetLocation == 0 && rear == 1) {
             array[rear] = element;
-            // TODO check if I need to add another modcount here
+            modCount++;
             rear++;
         } else {
             for (int i = rear; i >= (targetLocation + 1); i--) {
@@ -110,7 +110,7 @@ import java.util.NoSuchElementException;
                 modCount++;
             }
             array[targetLocation + 1] = element;
-            // TODO check if I need to add another modcount here
+            modCount++;
             rear++;
         }
     }
@@ -132,7 +132,7 @@ import java.util.NoSuchElementException;
                 modCount++;
             }
             array[index] = element;
-            // TODO check if I need to add another modcount here
+            modCount++;
             rear++;
         }
     }
@@ -143,7 +143,7 @@ import java.util.NoSuchElementException;
             throw new NoSuchElementException();
         } else {
             T element = array[0];
-            // TODO check if I need to add another modcount here
+            modCount++;
 
             for (int i = 0; i < rear; i++) {
                 array[i] = array[i + 1];
@@ -242,7 +242,7 @@ import java.util.NoSuchElementException;
             throw new IndexOutOfBoundsException();
         } else {
             array[index] = element;
-            // TODO check if I need to add another modcount here
+            modCount++;
         }
     }
 
@@ -378,54 +378,68 @@ import java.util.NoSuchElementException;
         // instance variables
         boolean nextCalled = false;
         int index = -1;
+        int iterModCount;
 
         public ArrayIterator() {
-
+            this.iterModCount = modCount;
         }
 
         @Override
         public boolean hasNext() {
-            boolean hasNext = false;
-            if(array[this.index + 1] != null) {
-                hasNext = true;
-            }
+            if(modCount != iterModCount) {
+                throw new ConcurrentModificationException();
+            } else {
+                boolean hasNext = false;
+                if(array[this.index + 1] != null) {
+                    hasNext = true;
+                }
 
-            return hasNext;
+                return hasNext;
+            }
         }
 
         @Override
         public T next() {
-            // account for empty list
-            if(array[0] == null) {
-                throw new NoSuchElementException();
-                // account for end of list
-            } else if (array[this.index + 1] == null) {
-                throw new NoSuchElementException();
+            if(modCount != iterModCount) {
+                throw new ConcurrentModificationException();
             } else {
-                this.index++;
-                T next = array[this.index];
-                nextCalled = true;
-                return next;
+                // account for empty list
+                if(array[0] == null) {
+                    throw new NoSuchElementException();
+                    // account for end of list
+                } else if (array[this.index + 1] == null) {
+                    throw new NoSuchElementException();
+                } else {
+                    this.index++;
+                    T next = array[this.index];
+                    nextCalled = true;
+                    return next;
+                }
             }
         }
 
         @Override
         public void remove() {
-            if(!nextCalled) {
-                throw new IllegalStateException();
+            if(modCount != iterModCount) {
+                throw new ConcurrentModificationException();
             } else {
-                for (int i = this.index; i < rear; i++) {
-                    array[i] = array[i + 1];
-                    modCount++;
-                }
-                // check you aren't setting rear to a negative number
-                if (rear > 0) {
-                    rear--;
+                if(!nextCalled) {
+                    throw new IllegalStateException();
                 } else {
-                    rear = 0;
+                    for (int i = this.index; i < rear; i++) {
+                        array[i] = array[i + 1];
+                        modCount++;
+                        iterModCount++;
+                    }
+                    // check you aren't setting rear to a negative number
+                    if (rear > 0) {
+                        rear--;
+                    } else {
+                        rear = 0;
+                    }
+                    this.index--;
+                    nextCalled = false;
                 }
-                this.index--;
-                nextCalled = false;
             }
         }
     }

@@ -347,7 +347,7 @@ public class ListTester {
 	 */
 	private IndexedUnsortedList<Integer> A_addAfterBA_AB() {
 		IndexedUnsortedList<Integer> list = emptyList_addToFrontA_A();
-		list.add(ELEMENT_B, ELEMENT_A);
+		list.addAfter(ELEMENT_B, ELEMENT_A);
 		return list;
 	}
 	private Scenario<Integer> A_addAfterBA_AB = () -> A_addAfterBA_AB();
@@ -1139,7 +1139,6 @@ public class ListTester {
 	private void testThreeElementList(Scenario<Integer> scenario, String scenarioName, Integer[] contents, String contentsString) {
 		System.out.printf("\nSCENARIO: %s\n\n", scenarioName);
 		try {
-			//TODO: tests for scenarios resulting in a 3-element list
 			// IndexedUnsortedList
 			printTest(scenarioName + "_testRemoveFirst", testRemoveFirst(scenario.build(), contents[0], Result.MatchingValue));
 			printTest(scenarioName + "_testRemoveLast", testRemoveLast(scenario.build(), contents[2], Result.MatchingValue));
